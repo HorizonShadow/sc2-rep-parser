@@ -3,10 +3,13 @@ require_relative 'player.rb'
 
 module Sc2RepParser
   class Parser
+    SUPPORTED_VERSION = [
+      [3, 9, 1],
+      [3, 10, 0]
+    ]
     attr_reader :data
-    def initialize(file, version)
+    def initialize(file)
       @file = File.new file, "rb"
-      @version = version
       @data = parse
     end
   
@@ -17,7 +20,7 @@ module Sc2RepParser
       offset = get_offset
       skip! 4
       header = Serialized.deserialize(@file)
-      raise "invalid version" if header[1][1..3] != @version
+      raise "invalid version" unless SUPPORTED_VERSIONS.include? header[1][1..3]
       skip! offset - @file.pos
       skip! 4
       second_offset = get_offset

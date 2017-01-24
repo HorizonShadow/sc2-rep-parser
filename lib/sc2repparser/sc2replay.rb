@@ -2,8 +2,8 @@ require_relative 'parser.rb'
 module Sc2RepParser
   class Sc2Replay
     attr_reader :players, :server, :map, :date
-    def initialize(file_name, version)
-      parser = Parser.new(file_name, version)
+    def initialize(file_name)
+      parser = Parser.new(file_name)
       @version = parser.data[:header][1]
       @players = parser.data[:players]
       @server = parser.data[:server]
