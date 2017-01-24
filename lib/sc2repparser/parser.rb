@@ -3,7 +3,7 @@ require_relative 'player.rb'
 
 module Sc2RepParser
   class Parser
-    SUPPORTED_VERSION = [
+    SUPPORTED_VERSIONS = [
       [3, 9, 1],
       [3, 10, 0]
     ]
@@ -20,6 +20,7 @@ module Sc2RepParser
       offset = get_offset
       skip! 4
       header = Serialized.deserialize(@file)
+      p header[1][1..3]
       raise "invalid version" unless SUPPORTED_VERSIONS.include? header[1][1..3]
       skip! offset - @file.pos
       skip! 4
