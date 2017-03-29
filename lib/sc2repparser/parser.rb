@@ -5,14 +5,17 @@ module Sc2RepParser
   class Parser
     SUPPORTED_VERSIONS = [
       [3, 9, 1],
-      [3, 10, 0]
-    ]
+      [3, 10, 0],
+      [3, 11, 0],
+      [3, 12, 0]
+    ].freeze
+
     attr_reader :data
     def initialize(file)
-      @file = File.new file, "rb"
+      @file = File.new file, 'rb'
       @data = parse
     end
-  
+
     private 
     def parse
       verify_mpq!
@@ -20,7 +23,6 @@ module Sc2RepParser
       offset = get_offset
       skip! 4
       header = Serialized.deserialize(@file)
-      p header[1][1..3]
       raise "invalid version" unless SUPPORTED_VERSIONS.include? header[1][1..3]
       skip! offset - @file.pos
       skip! 4
@@ -36,7 +38,7 @@ module Sc2RepParser
         time: (replay[5] - 116444735995904000) / (10 ** 7)
       }
     end
-  
+
     def parse_players(replay)
       replay[0].map do |player|
         Player.new(
@@ -62,19 +64,18 @@ module Sc2RepParser
         )
       end
     end
-  
+
     def verify_mpq!
       header = @file.read(3)
       raise "Invalid file" unless header == "MPQ"
     end
-  
+
     def get_offset
       @file.read(4).unpack('v')[0]
     end
-  
+
     def skip!(n)
       @file.read n
     end
-  
   end
 end
